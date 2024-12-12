@@ -1,0 +1,18 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "apps for developers to connect and know each other more and learn from them",
+  "main": "app.js",
+  "scripts": {
+    "start" : "node src/app.js",
+    "dev" : "nodemon src/app.js"
+  },
+  "keywords": [
+    "devTinder"
+  ],
+  "author": "Sunil Sharma",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
