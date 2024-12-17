@@ -2,27 +2,25 @@ const express = require("express");
 
 const app = express();
 
+//routes
 
-app.use("/test/2", (req, res)=> {
-    res.send("output from test----2 route")
+app.get("/user", (req, res)=> {
+    res.send("get data successfully");
 })
 
-app.use("/test", (req, res)=> {
-    res.send("output from test route")
+app.post("/user", (req, res)=> {
+    res.send("post data successfully");
 })
 
-app.use("/hello/2", (req, res)=>{
-    res.send("output from hello-----2 route");
+app.patch("/user", (req, res)=> {
+    res.send("patch data successfully");
 })
 
-app.use("/hello", (req, res)=>{
-    res.send("output from hello route");
+app.delete("/user", (req, res)=> {
+    res.send("delete data successfully");
 })
 
-app.use("/", (req, res)=> {
-    res.send("dashboard")
-})
-
+//listen
 app.listen(7000, ()=> {
     console.log("server running");
 });
