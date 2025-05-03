@@ -3,24 +3,29 @@ const express = require("express");
 const app = express();
 
 //routes
+app.use("/admin", (req, res, next) => {
+    const token = "ap1";
+    const isAdminAuthorize = token === "ap1";
+    
+    if (isAdminAuthorize) {
+        console.log("authorization");
+        next();
+    }
 
-app.get("/user", (req, res)=> {
-    res.send("get data successfully");
+    else {
+        res.status(401).send("unauthorize req");
+    }
 })
 
-app.post("/user", (req, res)=> {
-    res.send("post data successfully");
+app.get("/admin/getAllData", (req, res) => {
+    console.log("get data");
+    res.send("got all the data");
 })
 
-app.patch("/user", (req, res)=> {
-    res.send("patch data successfully");
-})
-
-app.delete("/user", (req, res)=> {
-    res.send("delete data successfully");
+app.delete("/admin/deleteAllData", (req, res)=> {
+    console.log("delete data");
+    res.send("delete all the data")
 })
 
 //listen
-app.listen(7000, ()=> {
-    console.log("server running");
-});
+app.listen(7000, () => {});
