@@ -1,31 +1,39 @@
 const express = require("express");
+const connectDb = require("./config/database");
+const User = require("./models/userModel");
 
 const app = express();
 
-//routes
-app.use("/admin", (req, res, next) => {
-    const token = "ap1";
-    const isAdminAuthorize = token === "ap1";
-    
-    if (isAdminAuthorize) {
-        console.log("authorization");
-        next();
+app.post("/signup", async(req, res) => {
+    const userObj = new User({
+        firstName: "sunil3",
+        lastName : "sharma3",
+        email : "sunil3@gmail.com",
+        password : "sunil@1234",
+        gender : "male",
+        education : "mca"
+
+    })
+
+    try{
+       await userObj.save();
+       res.send("data save successfully")
     }
-
-    else {
-        res.status(401).send("unauthorize req");
+    catch{
+        res.code(400).send("bad request");
     }
 })
 
-app.get("/admin/getAllData", (req, res) => {
-    console.log("get data");
-    res.send("got all the data");
+connectDb()
+.then(()=> {
+    console.log("connection established");
+    app.listen(7000, () => {
+        console.log("server running");
+    });
 })
+.catch((err) => console.log(err))
 
-app.delete("/admin/deleteAllData", (req, res)=> {
-    console.log("delete data");
-    res.send("delete all the data")
-})
+
 
 //listen
-app.listen(7000, () => {});
+
