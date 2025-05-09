@@ -13,8 +13,8 @@ app.post("/signup", async (req, res) => {
   try {
     await userObj.save();
     res.send("data save successfully");
-  } catch {
-    res.status(401).send("something went wrong");
+  } catch (err) {
+    res.status(401).send(err.message);
   }
 });
 
@@ -26,8 +26,8 @@ app.get("/user", async (req, res) => {
   try {
     const data = await User.find({ emailId: emailId });
     res.send(data);
-  } catch {
-    res.status(401).send("something went wrong");
+  } catch (err) {
+    res.status(401).send(err.message);
   }
 });
 
@@ -39,8 +39,8 @@ app.delete("/userDelete", async (req, res) => {
     await User.findByIdAndDelete(_id);
 
     res.send("user deleted");
-  } catch {
-    res.status(500).send("could not delete the data");
+  } catch (err) {
+    res.status(500).send(err.message);
   }
 });
 
@@ -54,8 +54,8 @@ app.patch("/userUpdate", async (req, res) => {
       returnDocument: "after",
     });
     res.send(updateUser);
-  } catch {
-    res.status(401).send("something went wrong");
+  } catch (err) {
+    res.status(401).send(err.message);
   }
 });
 
