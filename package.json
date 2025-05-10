@@ -4,8 +4,8 @@
   "description": "apps for developers to connect and know each other more and learn from them",
   "main": "app.js",
   "scripts": {
-    "start" : "node src/app.js",
-    "dev" : "nodemon src/app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "keywords": [
     "devTinder"
@@ -13,6 +13,8 @@
   "author": "Sunil Sharma",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.2"
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "mongoose": "^8.14.1"
   }
 }
