@@ -1,6 +1,7 @@
 const express = require("express");
 const connectDb = require("./config/database");
 const User = require("./models/userModel");
+const validationUserUpdate = require("./validation/validationUserUpdate");
 
 const app = express();
 
@@ -46,16 +47,14 @@ app.delete("/userDelete", async (req, res) => {
 
 //patch api to update data
 app.patch("/userUpdate", async (req, res) => {
-  const { _id } = req.body;
-  const obj = req.body;
-  console.log(obj);
+  const { _id, ...obj } = req.body;
+
   try {
-    const updateUser = await User.findByIdAndUpdate(_id, obj, {
-      returnDocument: "after",
-    });
+    validationUserUpdate(obj);
+    const updateUser = await User.findByIdAndUpdate(_id, obj);
     res.send(updateUser);
   } catch (err) {
-    res.status(401).send(err.message);
+    res.status(400).send(err.message);
   }
 });
 
