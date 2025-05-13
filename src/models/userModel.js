@@ -1,41 +1,52 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-    minLength: 2,
-    maxLength: 12,
-  },
+const userSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      minLength: 2,
+      maxLength: 12,
+    },
 
-  lastName: {
-    type: String,
-    maxLength: 15,
-  },
+    lastName: {
+      type: String,
+      maxLength: 15,
+    },
 
-  age: {
-    type: Number,
-    required: true,
-    min: 18,
-    max: 120,
-  },
+    age: {
+      type: Number,
+      required: true,
+      min: 18,
+      max: 120,
+    },
 
-  gender: {
-    type: String,
-    validate: {
-      validator: (val) => val === "male" || val === "female" || val === "other",
-      message: "gender must be male, female or other",
+    gender: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (val) =>
+          val === "male" || val === "female" || val === "other",
+        message: "gender must be male, female or other",
+      },
+    },
+
+    emailId: {
+      type: String,
+      required: true,
+      unique: true,
+      maxLength: 20,
+    },
+
+    password: {
+        type: String,
+        required: true
     },
   },
-
-  emailId: {
-    type: String,
-    unique: true,
-    maxLength: 20,
-  },
-
-  password: String,
-});
+  {
+    timestamps: true,
+  }
+);
 
 const User = mongoose.model("User", userSchema);
 
