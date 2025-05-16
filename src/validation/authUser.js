@@ -1,23 +1,24 @@
-const isEmail = require("validator/lib/isEmail");
+const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
-const bcrypt = require("bcrypt");
 
-const authUser = async (clientData) => {
-  const { emailId, password } = clientData;
-  if (!emailId) throw new Error("enter valid email");
-  if (!password) throw new Error("enter password");
+const authUser = async(req, res, next) => {
 
-  if (isEmail(emailId)) {
-    const user = await User.findOne({ emailId: emailId });
-    if(user) {
-        const match = await bcrypt.compare(password, user.password);
-        if(!match) throw new Error ("invalid credential");
-    } else {
-        throw new Error ("invalid credential");
-    }
-  } else {
-    throw new Error("invalid credential");
-  }
-};
+    const token = req?.cookies?.token;
+      if (!token) return res.status(401).send("no token found");
+      try {
+        const decodedToken = jwt.verify(token, "SecretKEY");
+    
+        const user = await User.findById(decodedToken?.id);
+
+        if(!user) throw new Error ("no user found");
+
+        req.user = user;
+        next();
+    
+        // res.status(200).send(user);
+      } catch (err) {
+        res.status(401).send(err.message);
+      }
+}
 
 module.exports = authUser;
