@@ -3,38 +3,65 @@ const connectDb = require("./config/database");
 const User = require("./models/userModel");
 const validationUserUpdate = require("./validation/validationUserUpdate");
 const validationSignup = require("./validation/validationSignup");
-const authUser = require("./validation/authUser");
+const validationUser = require("./validation/validationUser");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const authUser = require("./validation/authUser");
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 //signup post api
 app.post("/signup", async (req, res) => {
   try {
-
     await validationSignup(req.body);
 
-    const {firstName, lastName, age, gender, emailId, password} = req.body;
+    const { firstName, lastName, age, gender, emailId, password } = req.body;
     const encryptPassword = await bcrypt.hash(password, 10);
-    const userObj = new User({firstName, lastName, age, gender, emailId, password : encryptPassword});
+    const userObj = new User({
+      firstName,
+      lastName,
+      age,
+      gender,
+      emailId,
+      password: encryptPassword,
+    });
 
     await userObj.save();
     res.send("data save successfully");
-
   } catch (err) {
     res.status(401).send(err.message);
   }
 });
 
 app.post("/signin", async (req, res) => {
-    try {
-        await authUser(req.body);
-        res.send("login successful");
-    } catch (err) {
-        res.status(401).send(err.message);
-    }
+  try {
+    const emailId = await validationUser(req.body);
+
+    const user = await User.findOne({ emailId: emailId });
+
+    const payload = {
+      id: user._id,
+    };
+    const key = "SecretKEY";
+    const token = jwt.sign(payload, key);
+
+    res.cookie("token", token);
+    res.send("login successful");
+  } catch (err) {
+    res.status(401).send(err.message);
+  }
+});
+
+app.get("/profile",  authUser,  (req, res) => {
+  res.send(req.user);
+});
+
+app.post("/sendConnection", authUser, (req, res) => {
+  res.send("connected successfully: " + req.user)
 })
 
 //get user api
