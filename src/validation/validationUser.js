@@ -7,19 +7,15 @@ const validationUser = async (clientData) => {
   if (!emailId) throw new Error("enter valid email");
   if (!password) throw new Error("enter password");
 
-  if (isEmail(emailId)) {
-    const user = await User.findOne({ emailId: emailId });
-    if(user) {
-        const match = await bcrypt.compare(password, user.password);
-        if(!match) throw new Error ("invalid credential");
-    } else {
-        throw new Error ("invalid credential");
-    }
-  } else {
-    throw new Error("invalid credential");
-  }
+  if(!isEmail(emailId)) throw new Error("invalid credential");
 
-  return emailId;
+  const user = await User.findOne({ emailId});
+
+  if(!user) throw new Error ("invalid credential");
+  const match = await bcrypt.compare(password, user.password);
+  if(!match) throw new Error ("invalid credential");
+  return user;
+  
 };
 
 module.exports = validationUser;
