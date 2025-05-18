@@ -6,7 +6,7 @@ const authUser = async(req, res, next) => {
     const token = req?.cookies?.token;
       if (!token) return res.status(401).send("no token found");
       try {
-        const decodedToken = jwt.verify(token, "SecretKEY");
+        const decodedToken = jwt.verify(token, process.env.TOKEN_KEY);
     
         const user = await User.findById(decodedToken?.id);
 
