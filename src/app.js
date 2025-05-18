@@ -39,15 +39,9 @@ app.post("/signup", async (req, res) => {
 
 app.post("/signin", async (req, res) => {
   try {
-    const emailId = await validationUser(req.body);
+    const user = await validationUser(req.body);
 
-    const user = await User.findOne({ emailId: emailId });
-
-    const payload = {
-      id: user._id,
-    };
-    const key = "SecretKEY";
-    const token = jwt.sign(payload, key);
+    const token = user.generateToken();;
 
     res.cookie("token", token);
     res.send("login successful");
