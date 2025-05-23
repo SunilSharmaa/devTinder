@@ -2,53 +2,18 @@ const express = require("express");
 const connectDb = require("./config/database");
 const User = require("./models/userModel");
 const validationUserUpdate = require("./validation/validationUserUpdate");
-const validationSignup = require("./validation/validationSignup");
-const validationUser = require("./validation/validationUser");
-const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
 const authUser = require("./validation/authUser");
-
 const app = express();
+const authRouter = require("./router/authRouter");
+const profileRouter = require("./router/profileRouter");
 
 app.use(express.json());
 app.use(cookieParser());
 
-//signup post api
-app.post("/signup", async (req, res) => {
-  try {
-    await validationSignup(req.body);
+app.use("/", authRouter);
+app.use("/", profileRouter);
 
-    const { firstName, lastName, age, gender, emailId, password } = req.body;
-    const encryptPassword = await bcrypt.hash(password, 10);
-    const userObj = new User({
-      firstName,
-      lastName,
-      age,
-      gender,
-      emailId,
-      password: encryptPassword,
-    });
-
-    await userObj.save();
-    res.send("data save successfully");
-  } catch (err) {
-    res.status(401).send(err.message);
-  }
-});
-
-app.post("/signin", async (req, res) => {
-  try {
-    const user = await validationUser(req.body);
-
-    const token = user.generateToken();;
-
-    res.cookie("token", token);
-    res.send("login successful");
-  } catch (err) {
-    res.status(401).send(err.message);
-  }
-});
 
 app.get("/profile",  authUser,  (req, res) => {
   res.send(req.user);
@@ -80,19 +45,6 @@ app.delete("/userDelete", async (req, res) => {
     res.send("user deleted");
   } catch (err) {
     res.status(500).send(err.message);
-  }
-});
-
-//patch api to update data
-app.patch("/userUpdate", async (req, res) => {
-  const { _id, ...obj } = req.body;
-
-  try {
-    validationUserUpdate(obj);
-    const updateUser = await User.findByIdAndUpdate(_id, obj);
-    res.send(updateUser);
-  } catch (err) {
-    res.status(400).send(err.message);
   }
 });
 
