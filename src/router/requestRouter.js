@@ -16,16 +16,17 @@ connectionRequestRouter.post(
       const isStatusValid = allowedStatus.includes(status);
 
       if (!isStatusValid) {
-        throw new Error("invalid status");}
+        throw new Error("invalid status");
+      }
 
       const isUserExist =
         (await User.countDocuments({
           _id: userId,
         })) > 0;
 
-      if (!isUserExist){
+      if (!isUserExist) {
         throw new Error("sending connection request to invalid user");
-      } 
+      }
 
       const isConnectionRequestDuplicate =
         (await ConnectionRequest.countDocuments({
@@ -42,7 +43,7 @@ connectionRequestRouter.post(
         })) > 0;
 
       if (isConnectionRequestDuplicate) {
-          throw new Error("cannot send connection request again");
+        throw new Error("cannot send connection request again");
       }
 
       const connectionRequest = new ConnectionRequest({
@@ -59,6 +60,52 @@ connectionRequestRouter.post(
       res.status(400).json({
         error: err,
       });
+    }
+  }
+);
+
+connectionRequestRouter.post(
+  "/request/review/:status/:userId",
+  authUser,
+  async (req, res) => {
+    try {
+      const loggedInUserId = req.user._id.toString();
+      const { status, userId } = req.params;
+
+      const allowedStatus = ["accepted", "rejected"];
+
+      const isAllowedStatus = allowedStatus.includes(status);
+
+      if (!isAllowedStatus) throw new Error("status is invalid");
+
+      const isUserIdValid = (await User.countDocuments({
+        _id : userId
+      })) > 0;
+
+      if(!isUserIdValid) throw new Error("invalid user");
+
+      const connectionRequest =  await ConnectionRequest.findOne({
+        toUserId : loggedInUserId,
+        fromUserId : userId,
+        status : "interested"
+      })
+
+      if(!connectionRequest) throw new Error("invalid connection request");
+
+      connectionRequest.status = status;
+
+      await connectionRequest.save();
+
+      res.json({
+        message : "request " + status,
+        data : connectionRequest
+      })
+
+
+    } catch (err) {
+      res.status(400).json({
+          error : err.message
+      })
     }
   }
 );
