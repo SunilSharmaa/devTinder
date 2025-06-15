@@ -8,6 +8,7 @@ const app = express();
 const authRouter = require("./router/authRouter");
 const profileRouter = require("./router/profileRouter");
 const connectionRequestRouter = require("./router/requestRouter")
+const userRouter = require("./router/userRouter");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -15,6 +16,7 @@ app.use(cookieParser());
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", connectionRequestRouter);
+app.use("/", userRouter);
 
 
 app.get("/profile",  authUser,  (req, res) => {
