@@ -10,7 +10,7 @@ const validationUserUpdate = (clientData) => {
   if (!isUpdateAllowed) throw new Error("Invalid update fields");
 
   const {firstName, lastName, age} = clientData;
-  if (firstName) {
+  if (firstName) {  
     if (firstName.length < 2 || firstName.length > 12) {
         throw new Error ("length invalid");
     }
