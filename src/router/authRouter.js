@@ -4,6 +4,7 @@ const validationUser = require("../validation/validationUser");
 const validationSignup = require("../validation/validationSignup");
 const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
+
 authRouter.post("/signup", async (req, res) => {
   try {
     await validationSignup(req.body);
@@ -20,9 +21,17 @@ authRouter.post("/signup", async (req, res) => {
     });
 
     await userObj.save();
-    res.send("data save successfully");
+
+    res.status(201).json({
+      success : "true",
+      message : "user registered successful"
+    });
+
   } catch (err) {
-    res.status(401).send(err.message);
+    res.status(400).json({
+      success : "false",
+      message : err.message
+    });
   }
 });
 
@@ -33,7 +42,10 @@ authRouter.post("/signin", async (req, res) => {
     const token = user.generateToken();
 
     res.cookie("token", token);
-    res.send("login successful");
+    res.json({
+      success : "true",
+      data : user
+    });
   } catch (err) {
     res.status(401).send(err.message);
   }
@@ -41,7 +53,10 @@ authRouter.post("/signin", async (req, res) => {
 
 authRouter.post("/logout", (req, res) => {
   res.cookie("token", null);
-  res.send("user logout")
+  res.json({
+    success : "true",
+    message : "user logout"
+  })
 })
 
 module.exports = authRouter;
