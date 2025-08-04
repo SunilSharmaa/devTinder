@@ -6,8 +6,8 @@ const validationSignup = async (clientData) => {
     const {firstName, age , gender, emailId, password} = clientData;
 
     if(!firstName) throw new Error ("first name is required");
-    if(!age) throw new Error ("age is required");
     if(!gender) throw new Error ("gender is required");
+    if(!age) throw new Error ("age is required");
     if(!emailId) throw new Error ("email is required");
     if(!password) throw new Error ("password is required");
 
