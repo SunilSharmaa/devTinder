@@ -12,8 +12,7 @@ userRouter.get("/user/request/received", authUser, async (req, res) => {
       toUserId: loggedInUser._id,
       status: "interested",
     })
-      .populate("fromUserId", "firstName lastName")
-      .populate("toUserId", "firstName lastName");
+      .populate("fromUserId", "firstName lastName");
 
     if (connectionRequest.length > 0) {
       res.json({
@@ -21,7 +20,8 @@ userRouter.get("/user/request/received", authUser, async (req, res) => {
       });
     } else {
       res.json({
-        data: "no connection request found",
+        success : false,
+        data: [],
       });
     }
   } catch (err) {
