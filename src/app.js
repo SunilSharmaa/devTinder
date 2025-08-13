@@ -58,10 +58,12 @@ app.delete("/userDelete", async (req, res) => {
   }
 });
 
+const PORT = process.env.PORT || 7000;
+
 connectDb()
   .then(() => {
     console.log("connection established");
-    app.listen(7000, () => {
+    app.listen(PORT, () => {
       console.log("server running");
     });
   })
