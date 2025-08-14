@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [process.env.DEVTINDER_FRONTEND_URL, process.env.DEVTINDER_FRONTEND_LOCAL_URL],
     credentials: true,
   })
 );
