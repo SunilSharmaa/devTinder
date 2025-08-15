@@ -41,7 +41,12 @@ authRouter.post("/signin", async (req, res) => {
 
     const token = user.generateToken();
 
-    res.cookie("token", token);
+    res.cookie("token", token,{
+      httpOnly:true,
+      secure:true,
+      sameSite:"None"
+    }
+    );
     res.json({
       success : "true",
       data : user
