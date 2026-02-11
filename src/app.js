@@ -10,12 +10,21 @@ const profileRouter = require("./router/profileRouter");
 const connectionRequestRouter = require("./router/requestRouter");
 const userRouter = require("./router/userRouter");
 const cors = require("cors");
+const http = require("http");
+const { initializeSocket } = require("./utils/socket");
+const chatRouter = require("./router/chatRouter");
+
+const server = http.createServer(app);
+initializeSocket(server);
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [process.env.DEVTINDER_FRONTEND_URL, process.env.DEVTINDER_FRONTEND_LOCAL_URL],
+    origin: [
+      process.env.DEVTINDER_FRONTEND_URL,
+      process.env.DEVTINDER_FRONTEND_LOCAL_URL,
+    ],
     credentials: true,
   })
 );
@@ -24,6 +33,7 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", connectionRequestRouter);
 app.use("/", userRouter);
+app.use("/", chatRouter);
 
 app.get("/profile", authUser, (req, res) => {
   res.send(req.user);
@@ -63,7 +73,7 @@ const PORT = process.env.PORT || 7000;
 connectDb()
   .then(() => {
     console.log("connection established");
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log("server running");
     });
   })
