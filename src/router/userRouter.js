@@ -11,8 +11,7 @@ userRouter.get("/user/request/received", authUser, async (req, res) => {
     const connectionRequest = await ConnectionRequest.find({
       toUserId: loggedInUser._id,
       status: "interested",
-    })
-      .populate("fromUserId", "firstName lastName");
+    }).populate("fromUserId", "firstName lastName");
 
     if (connectionRequest.length > 0) {
       res.json({
@@ -20,7 +19,7 @@ userRouter.get("/user/request/received", authUser, async (req, res) => {
       });
     } else {
       res.json({
-        success : false,
+        success: false,
         data: [],
       });
     }
@@ -58,17 +57,11 @@ userRouter.get("/user/connection", authUser, async (req, res) => {
       return key.fromUserId;
     });
 
-    console.log(userConnection);
+    // console.log(userConnection);
 
-    if (userConnection.length > 0) {
-      res.json({
-        data: userData,
-      });
-    } else {
-      res.json({
-        data: "no connection found",
-      });
-    }
+    res.json({
+      data: userData,
+    });
   } catch (err) {
     res.status(400).json({
       error: err.message,
@@ -81,8 +74,6 @@ userRouter.get("/user/feed", authUser, async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
-
-  
 
   const allConnection = await ConnectionRequest.find({
     $or: [{ toUserId: loggedInUserId }, { fromUserId: loggedInUserId }],
@@ -97,13 +88,13 @@ userRouter.get("/user/feed", authUser, async (req, res) => {
 
   const allUser = await User.find({
     $and: [
-      {_id: {$nin: Array.from(hideUserFromFeed)}},
-      {_id: {$ne: loggedInUserId}},
+      { _id: { $nin: Array.from(hideUserFromFeed) } },
+      { _id: { $ne: loggedInUserId } },
     ],
   })
-  .select("firstName lastName")
-  .skip(skip)
-  .limit(limit);
+    .select("firstName lastName")
+    .skip(skip)
+    .limit(limit);
 
   res.json({
     data: allUser,
