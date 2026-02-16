@@ -16,7 +16,7 @@ const validationSignup = async (clientData) => {
     if(gender !== "male" && gender !== "female" && gender !== "other") throw new Error ("invalid gender");
     if(isEmail(emailId)) {
         const user = await User.findOne({emailId : emailId})
-        console.log(user);
+        // console.log(user);
         if(user) throw new Error ("user already exist");
     } else {
         throw new Error ("invalid email id");
