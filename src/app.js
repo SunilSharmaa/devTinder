@@ -19,12 +19,17 @@ initializeSocket(server);
 
 app.use(express.json());
 app.use(cookieParser());
+
+const allowedOrigins = [
+  process.env.DEVTINDER_FRONTEND_LOCAL_URL,
+  process.env.DEVTINDER_FRONTEND_URL
+];
+
+
+
 app.use(
   cors({
-    origin: [
-      process.env.DEVTINDER_FRONTEND_URL,
-      process.env.DEVTINDER_FRONTEND_LOCAL_URL,
-    ],
+    origin: allowedOrigins,
     credentials: true,
   })
 );
@@ -45,26 +50,13 @@ app.post("/sendConnection", authUser, (req, res) => {
 
 //get user api
 app.get("/user", async (req, res) => {
-  const { emailId } = req.body;
+  const { emailId } = req.query;
 
   try {
     const data = await User.find({ emailId: emailId });
     res.send(data);
   } catch (err) {
     res.status(401).send(err.message);
-  }
-});
-
-//delete user api
-app.delete("/userDelete", async (req, res) => {
-  const { _id } = req.body;
-
-  try {
-    await User.findByIdAndDelete(_id);
-
-    res.send("user deleted");
-  } catch (err) {
-    res.status(500).send(err.message);
   }
 });
 
