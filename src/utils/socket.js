@@ -2,10 +2,14 @@ const socket = require("socket.io");
 const { Chat } = require("../models/chatModel");
 
 const initializeSocket = (server) => {
-  console.log("hello");
+  const allowedOrigins = [
+    process.env.DEVTINDER_FRONTEND_URl,
+    process.env.DEVTINDER_FRONTEND_LOCAL_URL
+  ]
+
   const io = socket(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: allowedOrigins,
     },
   });
 
